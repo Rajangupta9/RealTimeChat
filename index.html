@@ -206,8 +206,12 @@
                             <p id="chatDescription" class="text-sm text-gray-500">Public chat for everyone</p>
                         </div>
                     </div>
-                    <div id="chatActions" class="hidden">
-                        <button id="leaveRoomBtn" class="text-gray-400 hover:text-red-500 transition">
+                    <div id="chatActions" class="flex items-center">
+                        <!-- Return to Global Chat Button -->
+                        <button id="returnToGlobalBtn" class="mr-4 text-blue-600 hover:text-blue-800 transition hidden">
+                            <i class="fas fa-globe mr-1"></i> Return to Global Chat
+                        </button>
+                        <button id="leaveRoomBtn" class="text-gray-400 hover:text-red-500 transition hidden">
                             <i class="fas fa-sign-out-alt"></i> Leave Room
                         </button>
                     </div>
@@ -289,5 +293,117 @@
 
     <!-- JavaScript -->
     <script src="app.js"></script>
+    
+    <!-- Add JavaScript for the Return to Global Chat button -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const returnToGlobalBtn = document.getElementById('returnToGlobalBtn');
+        
+        // Function to return to global chat
+        function returnToGlobalChat() {
+            // Update UI elements
+            document.getElementById('chatTitle').textContent = 'Global Chat';
+            document.getElementById('chatDescription').textContent = 'Public chat for everyone';
+            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-globe"></i>';
+            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center';
+            
+            // Hide the Return to Global button since we're already in global chat
+            returnToGlobalBtn.classList.add('hidden');
+            
+            // Hide leave room button
+            document.getElementById('leaveRoomBtn').classList.add('hidden');
+            
+            // Clear current chat messages and show global chat messages
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '';
+            
+            // Here you would add code to load global chat messages
+            // This depends on your socket.io implementation
+            
+            // Example notification
+            showNotification('Returned to Global Chat', 'info');
+            
+            // If using socket.io, you'd emit an event to join the global room
+            // socket.emit('joinGlobalRoom');
+        }
+        
+        // Event listener for the Return to Global Chat button
+        returnToGlobalBtn.addEventListener('click', returnToGlobalChat);
+        
+        // Function to show notification
+        function showNotification(message, type = 'info') {
+            const notificationToast = document.getElementById('notificationToast');
+            const notificationMessage = document.getElementById('notificationMessage');
+            const notificationIcon = document.getElementById('notificationIcon');
+            
+            notificationMessage.textContent = message;
+            
+            // Set icon and color based on notification type
+            if (type === 'success') {
+                notificationIcon.innerHTML = '<i class="fas fa-check-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-green-500';
+                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-green-500');
+            } else if (type === 'error') {
+                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-red-500';
+                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-red-500');
+            } else {
+                notificationIcon.innerHTML = '<i class="fas fa-info-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-blue-500';
+                notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-blue-500');
+            }
+            
+            // Show notification
+            notificationToast.classList.remove('hidden');
+            notificationToast.classList.add('notification');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                notificationToast.classList.add('hidden');
+                notificationToast.classList.remove('notification');
+            }, 3000);
+        }
+        
+        // Example: modify your existing code to show the Return to Global button
+        // when a user joins a room or starts a private chat
+        function joinRoom(roomName, roomDescription) {
+            // Update UI for the room
+            document.getElementById('chatTitle').textContent = roomName;
+            document.getElementById('chatDescription').textContent = roomDescription;
+            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-door-open"></i>';
+            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center';
+            
+            // Show the Return to Global button
+            returnToGlobalBtn.classList.remove('hidden');
+            
+            // Show leave room button
+            document.getElementById('leaveRoomBtn').classList.remove('hidden');
+            
+            // Your existing room joining code...
+        }
+        
+        // Example of starting a private chat
+        function startPrivateChat(username) {
+            // Update UI for private chat
+            document.getElementById('chatTitle').textContent = username;
+            document.getElementById('chatDescription').textContent = 'Private conversation';
+            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-user"></i>';
+            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center';
+            
+            // Show the Return to Global button
+            returnToGlobalBtn.classList.remove('hidden');
+            
+            // Hide leave room button
+            document.getElementById('leaveRoomBtn').classList.add('hidden');
+            
+            // Your existing private chat code...
+        }
+        
+        // These are example functions - you'll need to integrate them with your actual app.js
+        // Make these functions available globally or modify your existing code
+        window.joinRoom = joinRoom;
+        window.startPrivateChat = startPrivateChat;
+    });
+    </script>
 </body>
 </html>
