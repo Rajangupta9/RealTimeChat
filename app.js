@@ -1,5 +1,5 @@
 // Connect to Socket.io server
-const socket = io('http://localhost:5000');
+const socket = io('https://realtimechat-4rew.onrender.com');
 
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
