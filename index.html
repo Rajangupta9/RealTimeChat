@@ -404,6 +404,87 @@
         window.joinRoom = joinRoom;
         window.startPrivateChat = startPrivateChat;
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    const leaveRoomBtn = document.getElementById('leaveRoomBtn');
+    
+    // Function to handle leaving a room
+    function leaveRoom() {
+        // Update UI elements
+        document.getElementById('chatTitle').textContent = 'Global Chat';
+        document.getElementById('chatDescription').textContent = 'Public chat for everyone';
+        document.getElementById('chatIcon').innerHTML = '<i class="fas fa-globe"></i>';
+        document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center';
+        
+        // Hide the leave room button
+        leaveRoomBtn.classList.add('hidden');
+        
+        // Hide return to global button if it exists
+        const returnToGlobalBtn = document.getElementById('returnToGlobalBtn');
+        if (returnToGlobalBtn) {
+            returnToGlobalBtn.classList.add('hidden');
+        }
+        
+        // Clear current chat messages and show global chat messages
+        const messagesContainer = document.getElementById('messagesContainer');
+        messagesContainer.innerHTML = '';
+        
+        // Add a message that user left the room
+        const leaveMessage = document.createElement('div');
+        leaveMessage.className = 'flex justify-center';
+        leaveMessage.innerHTML = `
+            <div class="bg-white rounded-lg px-4 py-2 shadow-sm inline-block">
+                <p class="text-gray-500 text-sm">You left the room and returned to Global Chat</p>
+            </div>
+        `;
+        messagesContainer.appendChild(leaveMessage);
+        
+        // Show notification
+        showNotification('You left the room', 'info');
+        
+        // If using socket.io, emit an event to leave the current room
+        // socket.emit('leaveRoom', currentRoomId);
+        
+        // Reset any room-specific variables in your app
+        // currentRoomId = null;
+    }
+    
+    // Event listener for leave room button
+    leaveRoomBtn.addEventListener('click', leaveRoom);
+    
+    // Function to show notification (reused from previous code)
+    function showNotification(message, type = 'info') {
+        const notificationToast = document.getElementById('notificationToast');
+        const notificationMessage = document.getElementById('notificationMessage');
+        const notificationIcon = document.getElementById('notificationIcon');
+        
+        notificationMessage.textContent = message;
+        
+        // Set icon and color based on notification type
+        if (type === 'success') {
+            notificationIcon.innerHTML = '<i class="fas fa-check-circle fa-lg"></i>';
+            notificationIcon.className = 'flex-shrink-0 text-green-500';
+            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-green-500');
+        } else if (type === 'error') {
+            notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-lg"></i>';
+            notificationIcon.className = 'flex-shrink-0 text-red-500';
+            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-red-500');
+        } else {
+            notificationIcon.innerHTML = '<i class="fas fa-info-circle fa-lg"></i>';
+            notificationIcon.className = 'flex-shrink-0 text-blue-500';
+            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-blue-500');
+        }
+        
+        // Show notification
+        notificationToast.classList.remove('hidden');
+        notificationToast.classList.add('notification');
+        
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            notificationToast.classList.add('hidden');
+            notificationToast.classList.remove('notification');
+        }, 3000);
+    }
+});
     </script>
 </body>
 </html>
