@@ -359,161 +359,78 @@
     <!-- Add JavaScript for the Return to Global Chat button -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const returnToGlobalBtn = document.getElementById('returnToGlobalBtn');
+    const loginScreen = document.getElementById('loginScreen');
+    const chatInterface = document.getElementById('chatInterface');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const currentUsernameEl = document.getElementById('currentUsername');
+    const loginError = document.getElementById('loginError');
+
+    const usersTabBtn = document.getElementById('usersTabBtn');
+    const roomsTabBtn = document.getElementById('roomsTabBtn');
+    const usersTab = document.getElementById('usersTab');
+    const roomsTab = document.getElementById('roomsTab');
+    const createRoomBtn = document.getElementById('createRoomBtn');
+    const createRoomModal = document.getElementById('createRoomModal');
+    const cancelCreateRoomBtn = document.getElementById('cancelCreateRoomBtn');
+
+    // Initially hide chat interface
+    chatInterface.style.display = 'none';
+
+    // Tab switching functionality
+    usersTabBtn.addEventListener('click', () => {
+        usersTabBtn.classList.add('text-blue-600', 'border-blue-500');
+        usersTabBtn.classList.remove('text-gray-500');
+        roomsTabBtn.classList.remove('text-blue-600', 'border-blue-500');
+        roomsTabBtn.classList.add('text-gray-500');
         
-        // Function to return to global chat
-        function returnToGlobalChat() {
-            // Update UI elements
-            document.getElementById('chatTitle').textContent = 'Global Chat';
-            document.getElementById('chatDescription').textContent = 'Public chat for everyone';
-            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-globe"></i>';
-            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center';
-            
-            // Hide the Return to Global button since we're already in global chat
-            returnToGlobalBtn.classList.add('hidden');
-            
-            // Hide leave room button
-            document.getElementById('leaveRoomBtn').classList.add('hidden');
-            
-            // Clear current chat messages and show global chat messages
-            const messagesContainer = document.getElementById('messagesContainer');
-            messagesContainer.innerHTML = '';
-            
-            // Here you would add code to load global chat messages
-            // This depends on your socket.io implementation
-            
-            // Example notification
-            showNotification('Returned to Global Chat', 'info');
-            
-            // If using socket.io, you'd emit an event to join the global room
-            // socket.emit('joinGlobalRoom');
-        }
-        
-        // Event listener for the Return to Global Chat button
-        returnToGlobalBtn.addEventListener('click', returnToGlobalChat);
-        
-        // Function to show notification
-        function showNotification(message, type = 'info') {
-            const notificationToast = document.getElementById('notificationToast');
-            const notificationMessage = document.getElementById('notificationMessage');
-            const notificationIcon = document.getElementById('notificationIcon');
-            
-            notificationMessage.textContent = message;
-            
-            // Set icon and color based on notification type
-            if (type === 'success') {
-                notificationIcon.innerHTML = '<i class="fas fa-check-circle fa-lg"></i>';
-                notificationIcon.className = 'flex-shrink-0 text-green-500';
-                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-green-500');
-            } else if (type === 'error') {
-                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-lg"></i>';
-                notificationIcon.className = 'flex-shrink-0 text-red-500';
-                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-red-500');
-            } else {
-                notificationIcon.innerHTML = '<i class="fas fa-info-circle fa-lg"></i>';
-                notificationIcon.className = 'flex-shrink-0 text-blue-500';
-                notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-blue-500');
-            }
-            
-            // Show notification
-            notificationToast.classList.remove('hidden');
-            notificationToast.classList.add('notification');
-            
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                notificationToast.classList.add('hidden');
-                notificationToast.classList.remove('notification');
-            }, 3000);
-        }
-        
-        // Example: modify your existing code to show the Return to Global button
-        // when a user joins a room or starts a private chat
-        function joinRoom(roomName, roomDescription) {
-            // Update UI for the room
-            document.getElementById('chatTitle').textContent = roomName;
-            document.getElementById('chatDescription').textContent = roomDescription;
-            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-door-open"></i>';
-            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center';
-            
-            // Show the Return to Global button
-            returnToGlobalBtn.classList.remove('hidden');
-            
-            // Show leave room button
-            document.getElementById('leaveRoomBtn').classList.remove('hidden');
-            
-            // Your existing room joining code...
-        }
-        
-        // Example of starting a private chat
-        function startPrivateChat(username) {
-            // Update UI for private chat
-            document.getElementById('chatTitle').textContent = username;
-            document.getElementById('chatDescription').textContent = 'Private conversation';
-            document.getElementById('chatIcon').innerHTML = '<i class="fas fa-user"></i>';
-            document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center';
-            
-            // Show the Return to Global button
-            returnToGlobalBtn.classList.remove('hidden');
-            
-            // Hide leave room button
-            document.getElementById('leaveRoomBtn').classList.add('hidden');
-            
-            // Your existing private chat code...
-        }
-        
-        // These are example functions - you'll need to integrate them with your actual app.js
-        // Make these functions available globally or modify your existing code
-        window.joinRoom = joinRoom;
-        window.startPrivateChat = startPrivateChat;
+        usersTab.classList.remove('hidden');
+        roomsTab.classList.add('hidden');
     });
-    document.addEventListener('DOMContentLoaded', function() {
-    const leaveRoomBtn = document.getElementById('leaveRoomBtn');
-    
-    // Function to handle leaving a room
-    function leaveRoom() {
-        // Update UI elements
-        document.getElementById('chatTitle').textContent = 'Global Chat';
-        document.getElementById('chatDescription').textContent = 'Public chat for everyone';
-        document.getElementById('chatIcon').innerHTML = '<i class="fas fa-globe"></i>';
-        document.getElementById('chatIcon').className = 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center';
+
+    roomsTabBtn.addEventListener('click', () => {
+        roomsTabBtn.classList.add('text-blue-600', 'border-blue-500');
+        roomsTabBtn.classList.remove('text-gray-500');
+        usersTabBtn.classList.remove('text-blue-600', 'border-blue-500');
+        usersTabBtn.classList.add('text-gray-500');
         
-        // Hide the leave room button
-        leaveRoomBtn.classList.add('hidden');
+        roomsTab.classList.remove('hidden');
+        usersTab.classList.add('hidden');
+    });
+
+    // Create Room Modal Interactions
+    createRoomBtn.addEventListener('click', () => {
+        createRoomModal.style.display = 'flex';
+    });
+
+    cancelCreateRoomBtn.addEventListener('click', () => {
+        createRoomModal.style.display = 'none';
+    });
+
+    // Login Mechanism (Simulated)
+    loginBtn.addEventListener('click', () => {
+        const username = document.getElementById('username').value.trim();
         
-        // Hide return to global button if it exists
-        const returnToGlobalBtn = document.getElementById('returnToGlobalBtn');
-        if (returnToGlobalBtn) {
-            returnToGlobalBtn.classList.add('hidden');
+        if (username) {
+            // Simulate successful login
+            loginScreen.style.display = 'none';
+            chatInterface.style.display = 'flex';
+            currentUsernameEl.textContent = username;
+            loginError.classList.add('hidden');
+        } else {
+            loginError.textContent = 'Please enter a username';
+            loginError.classList.remove('hidden');
         }
-        
-        // Clear current chat messages and show global chat messages
-        const messagesContainer = document.getElementById('messagesContainer');
-        messagesContainer.innerHTML = '';
-        
-        // Add a message that user left the room
-        const leaveMessage = document.createElement('div');
-        leaveMessage.className = 'flex justify-center';
-        leaveMessage.innerHTML = `
-            <div class="bg-white rounded-lg px-4 py-2 shadow-sm inline-block">
-                <p class="text-gray-500 text-sm">You left the room and returned to Global Chat</p>
-            </div>
-        `;
-        messagesContainer.appendChild(leaveMessage);
-        
-        // Show notification
-        showNotification('You left the room', 'info');
-        
-        // If using socket.io, emit an event to leave the current room
-        // socket.emit('leaveRoom', currentRoomId);
-        
-        // Reset any room-specific variables in your app
-        // currentRoomId = null;
-    }
-    
-    // Event listener for leave room button
-    leaveRoomBtn.addEventListener('click', leaveRoom);
-    
-    // Function to show notification (reused from previous code)
+    });
+
+    // Logout Mechanism
+    logoutBtn.addEventListener('click', () => {
+        chatInterface.style.display = 'none';
+        loginScreen.style.display = 'flex';
+        document.getElementById('username').value = '';
+    });
+
+    // Enhanced Notification System
     function showNotification(message, type = 'info') {
         const notificationToast = document.getElementById('notificationToast');
         const notificationMessage = document.getElementById('notificationMessage');
@@ -521,31 +438,82 @@
         
         notificationMessage.textContent = message;
         
-        // Set icon and color based on notification type
-        if (type === 'success') {
-            notificationIcon.innerHTML = '<i class="fas fa-check-circle fa-lg"></i>';
-            notificationIcon.className = 'flex-shrink-0 text-green-500';
-            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-green-500');
-        } else if (type === 'error') {
-            notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-lg"></i>';
-            notificationIcon.className = 'flex-shrink-0 text-red-500';
-            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-red-500');
-        } else {
-            notificationIcon.innerHTML = '<i class="fas fa-info-circle fa-lg"></i>';
-            notificationIcon.className = 'flex-shrink-0 text-blue-500';
-            notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-blue-500');
+        // Reset classes
+        notificationToast.className = notificationToast.className.replace(/border-\w+-500/g, 'border-blue-500');
+        
+        switch(type) {
+            case 'success':
+                notificationIcon.innerHTML = '<i class="fas fa-check-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-green-500';
+                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-green-500');
+                break;
+            case 'error':
+                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-red-500';
+                notificationToast.className = notificationToast.className.replace('border-blue-500', 'border-red-500');
+                break;
+            default:
+                notificationIcon.innerHTML = '<i class="fas fa-info-circle fa-lg"></i>';
+                notificationIcon.className = 'flex-shrink-0 text-blue-500';
         }
         
-        // Show notification
         notificationToast.classList.remove('hidden');
         notificationToast.classList.add('notification');
         
-        // Auto-hide after 3 seconds
         setTimeout(() => {
             notificationToast.classList.add('hidden');
             notificationToast.classList.remove('notification');
         }, 3000);
     }
+
+    // Simulated User and Room Population
+    function populateUsers() {
+        const activeUsersList = document.getElementById('activeUsersList');
+        const sampleUsers = [
+            { name: 'Alice', status: 'active' },
+            { name: 'Bob', status: 'away' },
+            { name: 'Charlie', status: 'active' },
+            { name: 'David', status: 'active' }
+        ];
+
+        activeUsersList.innerHTML = sampleUsers.map(user => `
+            <div class="flex items-center justify-between hover:bg-gray-100 p-2 rounded-md cursor-pointer ${user.status === 'active' ? 'active-now' : ''}">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                        <span class="text-blue-600">${user.name[0]}</span>
+                    </div>
+                    <span class="text-sm">${user.name}</span>
+                </div>
+                <span class="text-xs text-gray-500">${user.status}</span>
+            </div>
+        `).join('');
+    }
+
+    function populateRooms() {
+        const roomsList = document.getElementById('roomsList');
+        const sampleRooms = [
+            { name: 'General Discussion', members: 24, description: 'Chat about anything!' },
+            { name: 'Tech Talk', members: 15, description: 'All things technology' },
+            { name: 'Gaming Corner', members: 30, description: 'Video game discussions' }
+        ];
+
+        roomsList.innerHTML = sampleRooms.map(room => `
+            <div class="bg-white border border-gray-200 rounded-md p-3 hover:shadow-sm cursor-pointer">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-medium text-gray-800">${room.name}</h4>
+                    <span class="text-xs text-gray-500">${room.members} members</span>
+                </div>
+                <p class="text-xs text-gray-500">${room.description}</p>
+            </div>
+        `).join('');
+    }
+
+    // Initialize dynamic content
+    populateUsers();
+    populateRooms();
+
+    // Attach global functions for external use
+    window.showNotification = showNotification;
 });
     </script>
 </body>
