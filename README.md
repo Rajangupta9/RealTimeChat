@@ -6,6 +6,17 @@ A real-time chat application that enables users to connect and communicate insta
 
 RealTimeChat is a lightweight, browser-based chat application built with Node.js, Express, and Socket.io. It allows users to join chat rooms, send public messages in global chat, and communicate privately with other users in real-time.
 
+## Register
+![image](https://github.com/user-attachments/assets/bd4508fe-0700-454c-abaa-5bf03c71e2c5)
+
+## Group Char layout
+![image](https://github.com/user-attachments/assets/eeacb61c-792c-4185-aae9-c1178bdd344a)
+
+## Private chat layout
+![image](https://github.com/user-attachments/assets/3be060ea-0038-4a87-8647-952a3970a934)
+
+
+
 ## Features
 
 - **User Authentication**: Simple username-based login system
